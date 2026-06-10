@@ -1,3 +1,4 @@
+
 import api from '../utils/api'
 import { useState, useEffect } from 'react'
 
@@ -113,105 +114,108 @@ export default function Transactions() {
   }
 
   // Generate & Print PDF Report
-  const generatePDF = () => {
-    const filtered = transactions.filter(t => {
-      const { year, month } = parseLocalDate(t.date)
-      if (reportType === 'monthly') return year === reportYear && month === reportMonth
-      return year === reportYear
-    })
+ // Import html2pdf at the top of your file if using ES modules:
+// import html2pdf from 'html2pdf.js'
+// Alternatively, you can dynamically require it inside the function to avoid SSR issues:
 
-    let totalIncome = 0, totalExpense = 0
-    filtered.forEach(t => {
-      if (isIncomeTx(t)) totalIncome += t.amount
-      else if (isExpenseTx(t)) totalExpense += t.amount
-    })
-    const balance = totalIncome - totalExpense
+const generatePDF = () => {
+  const filtered = transactions.filter(t => {
+    const { year, month } = parseLocalDate(t.date)
+    if (reportType === 'monthly') return year === reportYear && month === reportMonth
+    return year === reportYear
+  })
 
-    const buildYearlyRows = () => {
-      return SHORT_MONTHS.map((m, i) => {
-        const monthTxs = filtered.filter(t => parseLocalDate(t.date).month - 1 === i)
-        const inc = monthTxs.filter(isIncomeTx).reduce((s, t) => s + t.amount, 0)
-        const exp = monthTxs.filter(isExpenseTx).reduce((s, t) => s + t.amount, 0)
-        return { month: m, income: inc, expense: exp, net: inc - exp }
-      }).filter(r => r.income > 0 || r.expense > 0)
-    }
+  let totalIncome = 0, totalExpense = 0
+  filtered.forEach(t => {
+    if (isIncomeTx(t)) totalIncome += t.amount
+    else if (isExpenseTx(t)) totalExpense += t.amount
+  })
+  const balance = totalIncome - totalExpense
 
-    const periodLabel = reportType === 'monthly'
-      ? `${MONTHS[reportMonth - 1]} ${reportYear}`
-      : `Year ${reportYear}`
+  const buildYearlyRows = () => {
+    return SHORT_MONTHS.map((m, i) => {
+      const monthTxs = filtered.filter(t => parseLocalDate(t.date).month - 1 === i)
+      const inc = monthTxs.filter(isIncomeTx).reduce((s, t) => s + t.amount, 0)
+      const exp = monthTxs.filter(isExpenseTx).reduce((s, t) => s + t.amount, 0)
+      return { month: m, income: inc, expense: exp, net: inc - exp }
+    }).filter(r => r.income > 0 || r.expense > 0)
+  }
 
-    const tableRows = reportType === 'monthly'
-      ? filtered.sort((a, b) => parseLocalDate(a.date).day - parseLocalDate(b.date).day).map(t => {
-          const { day } = parseLocalDate(t.date)
-          return `<tr>
-            <td>${day} ${SHORT_MONTHS[reportMonth - 1]}</td>
-            <td>${isIncomeTx(t) ? 'Income' : t.category}</td>
-            <td style="font-style:italic;color:#64748b">${t.note || '—'}</td>
-            <td style="color:${isIncomeTx(t) ? '#16a34a' : '#dc2626'};font-weight:600">${t.type}</td>
-            <td style="color:${isIncomeTx(t) ? '#16a34a' : '#dc2626'};font-weight:700">${isIncomeTx(t) ? '+' : '-'} ${fmt(t.amount)}</td>
-          </tr>`
-        }).join('')
-      : buildYearlyRows().map(r => `<tr>
-          <td>${r.month} ${reportYear}</td>
-          <td style="color:#16a34a;font-weight:600">${fmt(r.income)}</td>
-          <td style="color:#dc2626;font-weight:600">${fmt(r.expense)}</td>
-          <td style="color:${r.net >= 0 ? '#2563eb' : '#ea580c'};font-weight:700">${fmt(r.net)}</td>
-        </tr>`).join('')
+  const periodLabel = reportType === 'monthly'
+    ? `${MONTHS[reportMonth - 1]} ${reportYear}`
+    : `Year ${reportYear}`
 
-    const headers = reportType === 'monthly'
-      ? '<tr><th>Date</th><th>Category</th><th>Note</th><th>Type</th><th>Amount</th></tr>'
-      : '<tr><th>Month</th><th>Income</th><th>Expense</th><th>Net</th></tr>'
+  const tableRows = reportType === 'monthly'
+    ? filtered.sort((a, b) => parseLocalDate(a.date).day - parseLocalDate(b.date).day).map(t => {
+        const { day } = parseLocalDate(t.date)
+        return `<tr>
+          <td>${day} ${SHORT_MONTHS[reportMonth - 1]}</td>
+          <td>${isIncomeTx(t) ? 'Income' : t.category}</td>
+          <td style="font-style:italic;color:#64748b">${t.note || '—'}</td>
+          <td style="color:${isIncomeTx(t) ? '#16a34a' : '#dc2626'};font-weight:600">${t.type}</td>
+          <td style="color:${isIncomeTx(t) ? '#16a34a' : '#dc2626'};font-weight:700">${isIncomeTx(t) ? '+' : '-'} ${fmt(t.amount)}</td>
+        </tr>`
+      }).join('')
+    : buildYearlyRows().map(r => `<tr>
+        <td>${r.month} ${reportYear}</td>
+        <td style="color:#16a34a;font-weight:600">${fmt(r.income)}</td>
+        <td style="color:#dc2626;font-weight:600">${fmt(r.expense)}</td>
+        <td style="color:${r.net >= 0 ? '#2563eb' : '#ea580c'};font-weight:700">${fmt(r.net)}</td>
+      </tr>`).join('')
 
-    const win = window.open('', '_blank')
-    win.document.write(`<!DOCTYPE html><html><head>
-      <title>MONEYMINT Report — ${periodLabel}</title>
-      <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', sans-serif; color: #1e293b; padding: 40px; }
-        .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 32px; padding-bottom: 20px; border-bottom: 2px solid #e2e8f0; }
-        .brand { font-size: 22px; font-weight: 800; color: #0f172a; }
-        .brand span { color: #0ea5e9; }
-        .meta { text-align: right; font-size: 13px; color: #64748b; }
-        .meta strong { display: block; font-size: 16px; color: #0f172a; margin-bottom: 4px; }
-        .summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 28px; }
-        .card { padding: 16px 20px; border-radius: 10px; border: 1px solid #e2e8f0; }
-        .card p { font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
-        .card h3 { font-size: 22px; font-weight: 800; }
-        .inc { border-left: 4px solid #22c55e; } .inc h3 { color: #16a34a; }
-        .exp { border-left: 4px solid #ef4444; } .exp h3 { color: #dc2626; }
-        .bal { border-left: 4px solid #3b82f6; } .bal h3 { color: ${balance >= 0 ? '#2563eb' : '#ea580c'}; }
-        table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        thead tr { background: #f8fafc; }
-        th { padding: 10px 14px; text-align: left; color: #64748b; font-weight: 600; border-bottom: 2px solid #e2e8f0; }
-        td { padding: 10px 14px; border-bottom: 1px solid #f1f5f9; }
-        tr:hover { background: #fafafa; }
-        .footer { margin-top: 32px; padding-top: 16px; border-top: 1px solid #e2e8f0; font-size: 11px; color: #94a3b8; text-align: center; }
-        @media print { body { padding: 20px; } }
-      </style></head><body>
-      <div class="header">
+  const headers = reportType === 'monthly'
+    ? '<tr><th>Date</th><th>Category</th><th>Note</th><th>Type</th><th>Amount</th></tr>'
+    : '<tr><th>Month</th><th>Income</th><th>Expense</th><th>Net</th></tr>'
+
+  // Create an isolated temporary element to hold your report HTML
+  const element = document.createElement('div');
+  element.innerHTML = `
+    <div style="font-family: 'Segoe UI', sans-serif; color: #1e293b; padding: 30px; background: #fff;">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 32px; padding-bottom: 20px; border-bottom: 2px solid #e2e8f0;">
         <div>
-          <div class="brand">💰 MONEY<span>MINT</span></div>
+          <div style="font-size: 22px; font-weight: 800; color: #0f172a;">💰 MONEY<span style="color: #0ea5e9;">MINT</span></div>
           <div style="font-size:13px;color:#64748b;margin-top:6px">${reportType === 'monthly' ? 'Monthly' : 'Annual'} Financial Report</div>
         </div>
-        <div class="meta">
-          <strong>${periodLabel}</strong>
+        <div style="text-align: right; font-size: 13px; color: #64748b;">
+          <strong style="display: block; font-size: 16px; color: #0f172a; margin-bottom: 4px;">${periodLabel}</strong>
           Generated on ${new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'long', year: 'numeric' })}
         </div>
       </div>
-      <div class="summary">
-        <div class="card inc"><p>Total Income</p><h3>${fmt(totalIncome)}</h3></div>
-        <div class="card exp"><p>Total Expense</p><h3>${fmt(totalExpense)}</h3></div>
-        <div class="card bal"><p>Balance — ${balance >= 0 ? '🟢 Profit' : '🔴 Loss'}</p><h3>${fmt(balance)}</h3></div>
+      <div style="display: flex; gap: 16px; margin-bottom: 28px;">
+        <div style="flex: 1; padding: 16px; border-radius: 10px; border: 1px solid #e2e8f0; border-left: 4px solid #22c55e;"><p style="font-size: 11px; color: #94a3b8; text-transform: uppercase; margin-bottom: 6px;">Total Income</p><h3 style="color: #16a34a; font-size: 20px; font-weight: 800;">${fmt(totalIncome)}</h3></div>
+        <div style="flex: 1; padding: 16px; border-radius: 10px; border: 1px solid #e2e8f0; border-left: 4px solid #ef4444;"><p style="font-size: 11px; color: #94a3b8; text-transform: uppercase; margin-bottom: 6px;">Total Expense</p><h3 style="color: #dc2626; font-size: 20px; font-weight: 800;">${fmt(totalExpense)}</h3></div>
+        <div style="flex: 1; padding: 16px; border-radius: 10px; border: 1px solid #e2e8f0; border-left: 4px solid #3b82f6;"><p style="font-size: 11px; color: #94a3b8; text-transform: uppercase; margin-bottom: 6px;">Balance</p><h3 style="color: ${balance >= 0 ? '#2563eb' : '#ea580c'}; font-size: 20px; font-weight: 800;">${fmt(balance)}</h3></div>
       </div>
-      <table><thead>${headers}</thead><tbody>
-        ${tableRows || '<tr><td colspan="5" style="text-align:center;color:#94a3b8;padding:24px">No transactions found for this period.</td></tr>'}
-      </tbody></table>
-      <div class="footer">MONEYMINT — Personal Finance Tracker &nbsp;·&nbsp; ${periodLabel}</div>
-    </body></html>`)
-    win.document.close()
-    setTimeout(() => { win.print(); win.close() }, 400)
-    setShowReportModal(false)
-  }
+      <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+        <thead><tr style="background: #f8fafc;">${headers}</tr></thead>
+        <tbody>
+          ${tableRows || '<tr><td colspan="5" style="text-align:center;color:#94a3b8;padding:24px">No transactions found for this period.</td></tr>'}
+        </tbody>
+      </table>
+    </div>
+  `;
+
+  // html2pdf options configuration
+  const opt = {
+    margin:       10,
+    filename:     `MONEYMINT-Report-${periodLabel}.pdf`,
+    image:        { type: 'jpeg', quality: 0.98 },
+    html2canvas:  { scale: 2, useCORS: true },
+    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  };
+
+  // Run the library execution method (Works smoothly on iOS, Android, and Web)
+  import('html2pdf.js').then((html2pdfModule) => {
+    const html2pdf = html2pdfModule.default;
+    html2pdf().from(element).set(opt).save().then(() => {
+      setShowReportModal(false);
+    });
+  }).catch(err => {
+    console.error("Failed to load html2pdf packaging dynamically", err);
+    alert("Download runtime engine failed to initialize.");
+  });
+  };
+  
 
   if (loading) {
     return <div style={{ textAlign: 'center', padding: '80px', color: '#94a3b8' }}>Loading secure ledger modules...</div>
