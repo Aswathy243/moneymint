@@ -64,25 +64,20 @@ export default function Transactions() {
   }, [])
 
   // ─── 2. Create Transaction (POST) ───
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    if (!formData.amount || Number(formData.amount) <= 0) return alert('Enter a valid amount')
+const handleSubmit = async (e) => {
+  e.preventDefault()
+  if (!formData.amount || Number(formData.amount) <= 0) return alert('Enter a valid amount')
 
-    try {
-      
-      const res = await api.post('/transactions', formData)
-
-      if (res.ok) {
-        const newTx = await res.json()
-        setTransactions([newTx, ...transactions]) // Add to UI top instantly
-        setFormData({ ...formData, amount: '', note: '' }) // Reset input fields
-      } else {
-        alert('Failed to save transaction backend-side.')
-      }
-    } catch (err) {
-      console.error('Error recording transaction:', err)
-    }
+  try {
+    const res = await api.post('/transactions', formData)
+    const newTx = res.data
+    setTransactions([newTx, ...transactions])
+    setFormData({ ...formData, amount: '', note: '' })
+  } catch (err) {
+    console.error('Error recording transaction:', err)
+    alert('Failed to save transaction backend-side.')
   }
+}
 
   // ─── 3. Delete Transaction (DELETE) ───
   const handleDelete = async (id) => {
