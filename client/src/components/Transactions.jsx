@@ -359,7 +359,7 @@ const handleSubmit = async (e) => {
             const isEditing = editingId === t._id
 
             return (
-              <div key={t._id} style={{ ...transactionRowStyle, borderLeft: `4px solid ${t.type === 'Income' ? '#10b981' : '#ef4444'}` }}>
+              <div key={t._id} style={{ ...transactionRowStyle, borderLeft: `4px solid ${t.type === 'income' ? '#10b981' : '#ef4444'}` }}>
                 {isEditing ? (
                   /* Inline Edit Mode Layout Window */
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '100%' }}>
@@ -388,14 +388,14 @@ const handleSubmit = async (e) => {
                     <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                       <div style={{
                         width: '42px', height: '42px', borderRadius: '10px', 
-                        background: t.type === 'Income' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)',
+                        background: t.type === 'income' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)',
                         display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px'
                       }}>
-                        {t.type === 'Income' ? '💰' : '🛒'}
+                        {t.type === 'income' ? '💰' : '🛒'}
                       </div>
                       <div>
                         <div style={{ fontWeight: '600', fontSize: '14px', color: '#fff' }}>
-                          {t.type === 'Income' ? 'Income' : t.category}
+                          {t.type === 'income' ? 'Income' : t.category}
                         </div>
                         <div style={{ fontSize: '12px', color: '#94a3b8', marginTop: '2px' }}>
                           {new Date(t.date).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
@@ -412,8 +412,8 @@ const handleSubmit = async (e) => {
                     </div>
 
                     <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
-                      <span style={{ fontSize: '15px', fontWeight: '700', color: t.type === 'Income' ? '#10b981' : '#f87171' }}>
-                        {t.type === 'Income' ? '+' : '-'} ₹{t.amount.toLocaleString('en-IN')}
+                      <span style={{ fontSize: '15px', fontWeight: '700', color: t.type === 'income' ? '#10b981' : '#f87171' }}>
+                        {t.type === 'income' ? '+' : '-'} ₹{t.amount.toLocaleString('en-IN')}
                       </span>
                       {/* Interactive Configuration Menu Links */}
                       <div style={{ display: 'flex', gap: '8px' }}>
