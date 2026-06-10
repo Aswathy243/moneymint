@@ -35,6 +35,15 @@ function Register() {
 
   return (
     <div style={{ minHeight: '100vh', background: '#0f172a', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
+            <style>{`
+            .autofill-dark:-webkit-autofill,
+            .autofill-dark:-webkit-autofill:hover, 
+            .autofill-dark:-webkit-autofill:focus {
+            -webkit-text-fill-color: #f1f5f9 !important;
+            -webkit-box-shadow: 0 0 0px 1000px #0f172a inset !important;
+             transition: background-color 5000s ease-in-out 0s;
+            }
+`}</style>
       <div style={{ width: '100%', maxWidth: 420 }}>
 
         {/* Logo */}
@@ -60,28 +69,30 @@ function Register() {
           <form onSubmit={handleSubmit}>
             <div style={{ marginBottom: 16 }}>
               <label style={{ display: 'block', color: '#94a3b8', fontSize: 13, marginBottom: 6, fontWeight: 500 }}>Name</label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                placeholder="Your name"
-                required
-                style={{ width: '100%', background: '#0f172a', border: '1px solid #334155', borderRadius: 8, padding: '10px 14px', color: '#f1f5f9', fontSize: 14, outline: 'none', boxSizing: 'border-box' }}
-              />
+             <input
+               type="text"
+               name="name"
+               className="autofill-dark" // Added class
+              value={formData.name}
+              onChange={handleChange}
+              placeholder="Your name"
+              required
+             style={{ width: '100%', background: '#0f172a', border: '1px solid #334155', borderRadius: 8, padding: '10px 14px', color: '#f1f5f9', fontSize: 14, outline: 'none', boxSizing: 'border-box' }}
+            />
             </div>
 
             <div style={{ marginBottom: 16 }}>
               <label style={{ display: 'block', color: '#94a3b8', fontSize: 13, marginBottom: 6, fontWeight: 500 }}>Email</label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="you@example.com"
-                required
-                style={{ width: '100%', background: '#0f172a', border: '1px solid #334155', borderRadius: 8, padding: '10px 14px', color: '#f1f5f9', fontSize: 14, outline: 'none', boxSizing: 'border-box' }}
-              />
+                  <input
+                   type="email"
+                  name="email"
+                   className="autofill-dark" // Added class
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="you@example.com"
+                   required
+                 style={{ width: '100%', background: '#0f172a', border: '1px solid #334155', borderRadius: 8, padding: '10px 14px', color: '#f1f5f9', fontSize: 14, outline: 'none', boxSizing: 'border-box' }}
+                 />
             </div>
 
             <div style={{ marginBottom: 24 }}>
@@ -90,24 +101,25 @@ function Register() {
               {/* Flex alignment layout relative context wrapper */}
               <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
                 <input
-                  type={showPassword ? 'text' : 'password'}
+                 type={showPassword ? 'text' : 'password'}
                   name="password"
+                  className="autofill-dark" // Added class
                   value={formData.password}
                   onChange={handleChange}
                   placeholder="Min 6 characters"
                   required
                   style={{ 
-                    width: '100%', 
-                    background: '#0f172a', 
-                    border: '1px solid #334155', 
-                    borderRadius: 8, 
-                    padding: '10px 44px 10px 14px', // Keeps text elements from clipping behind the indicator 
-                    color: '#f1f5f9', 
-                    fontSize: 14, 
-                    outline: 'none', 
-                    boxSizing: 'border-box' 
-                  }}
-                />
+                   width: '100%', 
+                   background: '#0f172a', 
+                   border: '1px solid #334155', 
+                   borderRadius: 8, 
+                   padding: '10px 44px 10px 14px', 
+                   color: '#f1f5f9', 
+                   fontSize: 14, 
+                   outline: 'none', 
+                   boxSizing: 'border-box' 
+                   }}
+                 />
                 
                 {/* Visibility Action Button Link */}
                 <button
