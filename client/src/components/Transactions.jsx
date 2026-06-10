@@ -198,26 +198,33 @@ export default function Transactions() {
     jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
   };
 
-  // Convert canvas output to Base64 String directly to force a true download
   import('html2pdf.js').then((html2pdfModule) => {
     const html2pdf = html2pdfModule.default;
     
-    html2pdf().from(element).set(opt).outputPdf('datauristring').then((pdfBase64Uri) => {
+    // Step 1: Export the data layout structure as an array buffer blob
+    html2pdf().from(element).set(opt).outputPdf('blob').then((pdfBlob) => {
+      
+      // Step 2: Force wrap the container into a generic octet-stream download type
+      const forcedDownloadBlob = new Blob([pdfBlob], { type: 'application/octet-stream' });
+      
+      // Step 3: Trigger standard local link dispatch mapping
+      const blobUrl = URL.createObjectURL(forcedDownloadBlob);
       const link = document.createElement('a');
-      link.href = pdfBase64Uri;
+      link.href = blobUrl;
       link.download = `MONEYMINT-Report-${periodLabel}.pdf`;
       
       document.body.appendChild(link);
       link.click();
       
       document.body.removeChild(link);
+      URL.revokeObjectURL(blobUrl);
       setShowReportModal(false);
     }).catch(err => {
-      console.error("Base64 string conversion failed", err);
-      alert("Error outputting data stream link.");
+      console.error("Blob compilation failure", err);
+      alert("Error building data package file assets.");
     });
   }).catch(err => {
-    console.error("Dynamic package import issue:", err);
+    console.error("Dynamic import error:", err);
   });
 };
 
