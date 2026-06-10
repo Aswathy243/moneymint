@@ -7,6 +7,9 @@ function Login() {
   const [formData, setFormData] = useState({ email: '', password: '' })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  
+  // State to track password visibility toggle
+  const [showPassword, setShowPassword] = useState(false)
 
   const { login, isAuthenticated } = useAuthStore()
   const navigate = useNavigate()
@@ -75,15 +78,51 @@ function Login() {
 
             <div style={{ marginBottom: 24 }}>
               <label style={{ display: 'block', color: '#94a3b8', fontSize: 13, marginBottom: 6, fontWeight: 500 }}>Password</label>
-              <input
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                placeholder="••••••••"
-                required
-                style={{ width: '100%', background: '#0f172a', border: '1px solid #334155', borderRadius: 8, padding: '10px 14px', color: '#f1f5f9', fontSize: 14, outline: 'none', boxSizing: 'border-box' }}
-              />
+              
+              {/* Wrapper container to place button inline relative to the input */}
+              <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                <input
+                  type={showPassword ? 'text' : 'password'} // Dynamically switch types
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  placeholder="••••••••"
+                  required
+                  style={{ 
+                    width: '100%', 
+                    background: '#0f172a', 
+                    border: '1px solid #334155', 
+                    borderRadius: 8, 
+                    padding: '10px 44px 10px 14px', // Increased right-padding to make room for the button
+                    color: '#f1f5f9', 
+                    fontSize: 14, 
+                    outline: 'none', 
+                    boxSizing: 'border-box' 
+                  }}
+                />
+                
+                {/* Toggle Visibility Button */}
+                <button
+                  type="button" // Critical: prevents button from accidentally submitting the form
+                  onClick={() => setShowPassword(!showPassword)}
+                  style={{
+                    position: 'absolute',
+                    right: '12px',
+                    background: 'transparent',
+                    border: 'none',
+                    color: '#64748b',
+                    cursor: 'pointer',
+                    fontSize: '16px',
+                    padding: '4px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    userSelect: 'none'
+                  }}
+                >
+                  {showPassword ? '👁️' : '🙈'}
+                </button>
+              </div>
             </div>
 
             <button
