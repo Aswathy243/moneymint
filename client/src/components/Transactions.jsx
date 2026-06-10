@@ -346,116 +346,101 @@ export default function Transactions() {
             Recent Activity Log
           </h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', maxHeight: '580px', overflowY: 'auto', paddingRight: '4px' }}>
+        
             {transactions.length === 0 ? (
-              <div style={{ color: '#94a3b8', fontSize: '14px', textAlign: 'center', padding: '40px 0' }}>No logged entries found.</div>
-            ) : transactions.map(t => {
-              const isEditing = editingId === t._id
 
-              return (
-                <div key={t._id} style={{ ...transactionRowStyle, borderLeft: `4px solid ${t.type?.toLowerCase() === 'income' ? '#10b981' : '#ef4444'}` }}>
-                  {isEditing ? (
-                    /* Inline Edit Mode Layout Window (Made fully responsive for mobile) */
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '100%' }}>
-                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '10px' }}>
-                        <div>
-                          <label style={inlineLabelStyle}>Type</label>
-                          <select style={inlineInputStyle} value={editFormData.type} onChange={e => setEditFormData({ ...editFormData, type: e.target.value, category: e.target.value.toLowerCase() === 'income' ? '' : (editFormData.category || 'Food & Dining') })}>
-                            <option value="income">Income</option>
-                            <option value="expense">Expense</option>
-                          </select>
-                        </div>
-                        <div>
-                          <label style={inlineLabelStyle}>Amount</label>
-                          <input type="number" style={inlineInputStyle} value={editFormData.amount} onChange={e => setEditFormData({ ...editFormData, amount: e.target.value })} placeholder="Amount" />
-                        </div>
-                        <div>
-                          <label style={inlineLabelStyle}>Date</label>
-                          <input type="date" style={inlineInputStyle} value={editFormData.date} onChange={e => setEditFormData({ ...editFormData, date: e.target.value })} />
-                        </div>
-                        {editFormData.type?.toLowerCase() !== 'income' && (
-                          <div>
-                            <label style={inlineLabelStyle}>Category</label>
-                            <select style={inlineInputStyle} value={editFormData.category} onChange={e => setEditFormData({ ...editFormData, category: e.target.value })}>
-                              {EXPENSE_CATEGORIES.map(cat => <option key={cat} value={cat}>{cat}</option>)}
-                            </select>
-                          </div>
-                        )}
-                      </div>
-                      <div>
-                        <label style={inlineLabelStyle}>Customized Notes</label>
-                        <input type="text" style={{ ...inlineInputStyle, width: '100%' }} value={editFormData.note} onChange={e => setEditFormData({ ...editFormData, note: e.target.value })} placeholder="Add details..." />
-                      </div>
-                      <div style={{ display: 'flex', gap: '10px', marginTop: '4px', justifyContent: 'flex-end' }}>
-                        <button onClick={() => handleUpdateSubmit(t._id)} style={saveRowBtn}>Save ✔</button>
-                        <button onClick={() => setEditingId(null)} style={cancelRowBtn}>Cancel</button>
-                      </div>
-                    </div>
-                  ) : (
-                    /* Standard List Row View Layout Window (Made fully responsive for mobile) */
-                                                     /* Standard List Row View Layout Window */
-                                            /* Standard List Row View Layout Window */
-<div style={{ display: 'flex', flexDirection: 'column', width: '100%', gap: '10px' }}>
-  
-  {/* Top Row: Icon + Category Header + Price */}
-  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', gap: '8px' }}>
-    
-    {/* Icon & Title */}
-    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0 }}>
-      <div style={{
-        width: '38px',
-        height: '38px',
-        borderRadius: '10px',
-        flexShrink: 0,
-        background: t.type?.toLowerCase() === 'income' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: '16px'
-      }}>
-        {t.type?.toLowerCase() === 'income' ? '💰' : '🛒'}
-      </div>
-      
-      <div style={{ fontWeight: '600', fontSize: '14px', color: '#fff', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-        {t.type?.toLowerCase() === 'income' ? 'Income' : (t.category || 'Expense')}
-      </div>
-    </div>
+   <div style={{ color: '#94a3b8', fontSize: '14px', textAlign: 'center', padding: '40px 0' }}>No logged entries found.</div>
+) : transactions.map(t => {
+  const isEditing = editingId === t._id
 
-    {/* Amount/Price Display */}
-    <span style={{ fontSize: '15px', fontWeight: '700', color: t.type?.toLowerCase() === 'income' ? '#10b981' : '#f87171', whiteSpace: 'nowrap', flexShrink: 0 }}>
-      {t.type?.toLowerCase() === 'income' ? '+' : '-'} ₹{Number(t.amount).toLocaleString('en-IN')}
-    </span>
+  return (
+    <div 
+      key={t._id} 
+      style={{ 
+        display: 'block', // Overriding flex completely to prevent horizontal crushing
+        padding: '16px', 
+        background: '#0f172a', 
+        borderRadius: '12px', 
+        border: '1px solid #334155', 
+        borderLeft: `4px solid ${t.type?.toLowerCase() === 'income' ? '#10b981' : '#ef4444'}`,
+        marginBottom: '14px',
+        boxSizing: 'border-box'
+      }}
+    >
+      {isEditing ? (
+        /* Inline Edit Mode Layout Window */
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '100%' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '10px' }}>
+            <div>
+              <label style={inlineLabelStyle}>Type</label>
+              <select style={inlineInputStyle} value={editFormData.type} onChange={e => setEditFormData({ ...editFormData, type: e.target.value, category: e.target.value.toLowerCase() === 'income' ? '' : (editFormData.category || 'Food & Dining') })}>
+                <option value="income">Income</option>
+                <option value="expense">Expense</option>
+              </select>
+            </div>
+            <div>
+              <label style={inlineLabelStyle}>Amount</label>
+              <input type="number" style={inlineInputStyle} value={editFormData.amount} onChange={e => setEditFormData({ ...editFormData, amount: e.target.value })} placeholder="Amount" />
+            </div>
+            <div>
+              <label style={inlineLabelStyle}>Date</label>
+              <input type="date" style={inlineInputStyle} value={editFormData.date} onChange={e => setEditFormData({ ...editFormData, date: e.target.value })} />
+            </div>
+            {editFormData.type?.toLowerCase() !== 'income' && (
+              <div>
+                <label style={inlineLabelStyle}>Category</label>
+                <select style={inlineInputStyle} value={editFormData.category} onChange={e => setEditFormData({ ...editFormData, category: e.target.value })}>
+                  {EXPENSE_CATEGORIES.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+                </select>
+              </div>
+            )}
+          </div>
+          <div>
+            <label style={inlineLabelStyle}>Customized Notes</label>
+            <input type="text" style={{ ...inlineInputStyle, width: '100%' }} value={editFormData.note} onChange={e => setEditFormData({ ...editFormData, note: e.target.value })} placeholder="Add details..." />
+          </div>
+          <div style={{ display: 'flex', gap: '10px', marginTop: '4px', justifyContent: 'flex-end' }}>
+            <button onClick={() => handleUpdateSubmit(t._id)} style={saveRowBtn}>Save ✔</button>
+            <button onClick={() => setEditingId(null)} style={cancelRowBtn}>Cancel</button>
+          </div>
+        </div>
+      ) : (
+        /* Standard List Row View Layout Window - Safe Block Structure */
+        <div style={{ width: '100%' }}>
+          
+          {/* Top Line: Header Category & Price */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0 }}>
+              <span style={{ fontSize: '18px', flexShrink: 0 }}>
+                {t.type?.toLowerCase() === 'income' ? '💰' : '🛒'}
+              </span>
+              <span style={{ fontWeight: '700', fontSize: '15px', color: '#fff', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                {t.type?.toLowerCase() === 'income' ? 'Income' : (t.category || 'Expense')}
+              </span>
+            </div>
+            <span style={{ fontSize: '16px', fontWeight: '800', color: t.type?.toLowerCase() === 'income' ? '#10b981' : '#f87171', whiteSpace: 'nowrap', marginLeft: '10px' }}>
+              {t.type?.toLowerCase() === 'income' ? '+' : '-'} ₹{Number(t.amount).toLocaleString('en-IN')}
+            </span>
+          </div>
 
-  </div>
+          {/* Bottom Line: Metadata Info and Action Control row split */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid #1e293b', paddingTop: '8px', marginTop: '4px' }}>
+            <div style={{ fontSize: '12px', color: '#94a3b8', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', paddingRight: '8px' }}>
+              <span>{new Date(t.date).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
+              {t.note && <span style={{ color: '#64748b' }}> • {t.note}</span>}
+            </div>
+            <div style={{ display: 'flex', gap: '8px', flexShrink: 0 }}>
+              <button onClick={() => startEdit(t)} style={{ ...actionEditBtn, padding: '6px 12px' }}>✏️</button>
+              <button onClick={() => handleDelete(t._id)} style={{ ...actionDeleteBtn, padding: '6px 12px' }}>🗑️</button>
+            </div>
+          </div>
 
-  {/* Bottom Row: Date/Notes + Edit/Delete Buttons */}
-  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', borderTop: '1px solid #1e293b', paddingTop: '8px', marginTop: '2px', gap: '8px' }}>
-    
-    {/* Date and Custom Note */}
-    <div style={{ fontSize: '12px', color: '#94a3b8', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', minWidth: 0 }}>
-      <span>
-        {new Date(t.date).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
-      </span>
-      {t.note && (
-        <span style={{ color: '#64748b' }}>
-          {` • ${t.note}`}
-        </span>
+        </div>
       )}
     </div>
-
-    {/* Action Control Button Icons strip */}
-    <div style={{ display: 'flex', gap: '8px', flexShrink: 0 }}>
-      <button onClick={() => startEdit(t)} style={{ ...actionEditBtn, padding: '6px 12px' }} title="Edit entry">✏️</button>
-      <button onClick={() => handleDelete(t._id)} style={{ ...actionDeleteBtn, padding: '6px 12px' }} title="Delete entry">🗑️</button>
-    
-    </div>
-
-  </div>
-
-</div>
-                )}
-            </div>
-              )
-            })}
+  )
+})}
+            
           </div>
         </div>
 
