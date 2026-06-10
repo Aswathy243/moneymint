@@ -38,7 +38,7 @@ function Register() {
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
           <span style={{ fontSize: 36 }}>💰</span>
           <h1 style={{ color: '#38bdf8', fontWeight: 800, fontSize: 28, margin: '8px 0 4px' }}>
-            MONEY<span style={{ color: '#10b981' }}>MINT</span>
+            FYN<span style={{ color: '#10b981' }}>ZOVA</span>
           </h1>
           <p style={{ color: '#64748b', fontSize: 14, margin: 0 }}>Personal Finance Tracker</p>
         </div>
