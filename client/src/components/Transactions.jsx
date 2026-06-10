@@ -163,10 +163,10 @@ export default function Transactions() {
     : '<tr><th style="padding:10px 14px; text-align:left; color:#64748b; font-weight:600; border-bottom:2px solid #e2e8f0;">Month</th><th style="padding:10px 14px; text-align:left; color:#64748b; font-weight:600; border-bottom:2px solid #e2e8f0;">Income</th><th style="padding:10px 14px; text-align:left; color:#64748b; font-weight:600; border-bottom:2px solid #e2e8f0;">Expense</th><th style="padding:10px 14px; text-align:left; color:#64748b; font-weight:600; border-bottom:2px solid #e2e8f0;">Net</th></tr>'
 
   const element = document.createElement('div');
-  element.style.width = '650px'; // Keeps standard rendering widths safe inside canvas converters
+  element.style.width = '600px'; 
   element.innerHTML = `
-    <div style="font-family: 'Segoe UI', sans-serif; color: #1e293b; padding: 30px; background: #fff;">
-      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 32px; padding-bottom: 20px; border-bottom: 2px solid #e2e8f0;">
+    <div style="font-family: 'Segoe UI', sans-serif; color: #1e293b; padding: 25px; background: #fff;">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 2px solid #e2e8f0;">
         <div>
           <div style="font-size: 22px; font-weight: 800; color: #0f172a;">💰 MONEY<span style="color: #0ea5e9;">MINT</span></div>
           <div style="font-size:13px;color:#64748b;margin-top:6px">${reportType === 'monthly' ? 'Monthly' : 'Annual'} Financial Report</div>
@@ -176,12 +176,12 @@ export default function Transactions() {
           Generated on ${new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'long', year: 'numeric' })}
         </div>
       </div>
-      <div style="display: flex; gap: 16px; margin-bottom: 28px;">
-        <div style="flex: 1; padding: 14px; border-radius: 10px; border: 1px solid #e2e8f0; border-left: 4px solid #22c55e;"><p style="font-size: 11px; color: #94a3b8; text-transform: uppercase; margin-bottom: 6px; margin-top:0;">Total Income</p><h3 style="color: #16a34a; font-size: 18px; font-weight: 800; margin:0;">${fmt(totalIncome)}</h3></div>
-        <div style="flex: 1; padding: 14px; border-radius: 10px; border: 1px solid #e2e8f0; border-left: 4px solid #ef4444;"><p style="font-size: 11px; color: #94a3b8; text-transform: uppercase; margin-bottom: 6px; margin-top:0;">Total Expense</p><h3 style="color: #dc2626; font-size: 18px; font-weight: 800; margin:0;">${fmt(totalExpense)}</h3></div>
-        <div style="flex: 1; padding: 14px; border-radius: 10px; border: 1px solid #e2e8f0; border-left: 4px solid #3b82f6;"><p style="font-size: 11px; color: #94a3b8; text-transform: uppercase; margin-bottom: 6px; margin-top:0;">Balance</p><h3 style="color: ${balance >= 0 ? '#2563eb' : '#ea580c'}; font-size: 18px; font-weight: 800; margin:0;">${fmt(balance)}</h3></div>
+      <div style="display: flex; gap: 12px; margin-bottom: 24px;">
+        <div style="flex: 1; padding: 12px; border-radius: 10px; border: 1px solid #e2e8f0; border-left: 4px solid #22c55e;"><p style="font-size: 11px; color: #94a3b8; text-transform: uppercase; margin-bottom: 4px; margin-top:0;">Total Income</p><h3 style="color: #16a34a; font-size: 18px; font-weight: 800; margin:0;">${fmt(totalIncome)}</h3></div>
+        <div style="flex: 1; padding: 12px; border-radius: 10px; border: 1px solid #e2e8f0; border-left: 4px solid #ef4444;"><p style="font-size: 11px; color: #94a3b8; text-transform: uppercase; margin-bottom: 4px; margin-top:0;">Total Expense</p><h3 style="color: #dc2626; font-size: 18px; font-weight: 800; margin:0;">${fmt(totalExpense)}</h3></div>
+        <div style="flex: 1; padding: 12px; border-radius: 10px; border: 1px solid #e2e8f0; border-left: 4px solid #3b82f6;"><p style="font-size: 11px; color: #94a3b8; text-transform: uppercase; margin-bottom: 4px; margin-top:0;">Balance</p><h3 style="color: ${balance >= 0 ? '#2563eb' : '#ea580c'}; font-size: 18px; font-weight: 800; margin:0;">${fmt(balance)}</h3></div>
       </div>
-      <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+      <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
         <thead><tr style="background: #f8fafc;">${headers}</tr></thead>
         <tbody>
           ${tableRows || '<tr><td colspan="5" style="text-align:center;color:#94a3b8;padding:24px">No transactions found for this period.</td></tr>'}
@@ -191,36 +191,33 @@ export default function Transactions() {
   `;
 
   const opt = {
-    margin:       10,
+    margin:       8,
     filename:     `MONEYMINT-Report-${periodLabel}.pdf`,
-    image:        { type: 'jpeg', quality: 0.98 },
+    image:        { type: 'jpeg', quality: 0.95 },
     html2canvas:  { scale: 2, logging: false, useCORS: true },
     jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
   };
 
-  // Safe manual extraction via data URLs (Completely prevents native mobile layout loops)
+  // Convert canvas output to Base64 String directly to force a true download
   import('html2pdf.js').then((html2pdfModule) => {
     const html2pdf = html2pdfModule.default;
     
-    html2pdf().from(element).set(opt).outputPdf('blob').then((pdfBlob) => {
-      const blobUrl = URL.createObjectURL(pdfBlob);
+    html2pdf().from(element).set(opt).outputPdf('datauristring').then((pdfBase64Uri) => {
       const link = document.createElement('a');
-      link.href = blobUrl;
+      link.href = pdfBase64Uri;
       link.download = `MONEYMINT-Report-${periodLabel}.pdf`;
       
       document.body.appendChild(link);
       link.click();
       
-      // Clean up DOM and memory space allocations
       document.body.removeChild(link);
-      URL.revokeObjectURL(blobUrl);
       setShowReportModal(false);
     }).catch(err => {
-      console.error("Blob stream generation failed", err);
-      alert("Error outputting layout data link.");
+      console.error("Base64 string conversion failed", err);
+      alert("Error outputting data stream link.");
     });
   }).catch(err => {
-    console.error("Dynamic import error:", err);
+    console.error("Dynamic package import issue:", err);
   });
 };
 
