@@ -392,49 +392,64 @@ export default function Transactions() {
                     </div>
                   ) : (
                     /* Standard List Row View Layout Window (Made fully responsive for mobile) */
-                    /* Standard List Row View Layout Window */
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '12px', width: '100%', alignItems: 'center' }}>
+                                                     /* Standard List Row View Layout Window */
+             <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '12px', width: '100%', alignItems: 'center' }}>
   
-                      {/* Left Side: Icon + Text Details */}
+                    {/* Left Side: Icon + Text Details */}
                       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0 }}>
-                        <div style={{
-                                  width: '40px',
-                                  height: '40px',
-                                  borderRadius: '10px',
-                                  flexShrink: 0,
-                                  background: t.type?.toLowerCase() === 'income' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)',
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  fontSize: '18px'
-                                      }}>
-                           {t.type?.toLowerCase() === 'income' ? '💰' : '🛒'}
-                           </div>
-    
-                             <div style={{ minWidth: 0 }}>
-                               <div style={{ fontWeight: '600', fontSize: '14px', color: '#fff', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                 {t.type?.toLowerCase() === 'income' ? 'Income' : t.category}
-                                     </div>
-                                <div style={{ fontSize: '12px', color: '#94a3b8', marginTop: '2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                             {new Date(t.date).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
-                         {t.note && ` • ${t.note}`}
+                         <div style={{
+                               width: '40px',
+                               height: '40px',
+                               borderRadius: '10px',
+                               flexShrink: 0,
+                               background: t.type?.toLowerCase() === 'income' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)',
+                               display: 'flex',
+                               alignItems: 'center',
+                               justifyContent: 'center',
+                               fontSize: '18px'
+                           }}>
+                         {t.type?.toLowerCase() === 'income' ? '💰' : '🛒'}
                        </div>
-                      </div>
-                    </div>
-
-                     {/* Right Side: Price + Control Buttons Stacked Horizontally */}
-               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexShrink: 0, justifyContent: 'flex-end' }}>
-                   <span style={{ fontSize: '15px', fontWeight: '700', color: t.type?.toLowerCase() === 'income' ? '#10b981' : '#f87171', whiteSpace: 'nowrap' }}>
-                       {t.type?.toLowerCase() === 'income' ? '+' : '-'} ₹{Number(t.amount).toLocaleString('en-IN')}
-                   </span>
     
-                   <div style={{ display: 'flex', gap: '6px', flexShrink: 0 }}>
-                     <button onClick={() => startEdit(t)} style={actionEditBtn} title="Edit row entry">✏️</button>
-                     <button onClick={() => handleDelete(t._id)} style={actionDeleteBtn} title="Delete row entry">🗑️</button>
-                   </div>
+                <div style={{ minWidth: 0, display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                      {/* Title Header: Shows Category Name for Expenses, "Income" for Income */}
+                 <div style={{ fontWeight: '600', fontSize: '14px', color: '#fff', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {t.type?.toLowerCase() === 'income' ? 'Income' : (t.category || 'Expense')}
                  </div>
+      
+        {/* Subtitle Details: Date + Custom Note */}
+        <div style={{ fontSize: '12px', color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+        <span style={{ whiteSpace: 'nowrap' }}>
+          {new Date(t.date).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
+        </span>
+        {t.note && (
+          <span style={{ 
+            overflow: 'hidden', 
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+            color: '#64748b',
+            maxWidth: '120px'
+          }}>
+            • {t.note}
+          </span>
+        )}
+      </div>
+    </div>
+  </div>
 
-               </div>
+  {/* Right Side: Price + Control Buttons Stacked Horizontally */}
+  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexShrink: 0, justifyContent: 'flex-end' }}>
+    <span style={{ fontSize: '15px', fontWeight: '700', color: t.type?.toLowerCase() === 'income' ? '#10b981' : '#f87171', whiteSpace: 'nowrap' }}>
+      {t.type?.toLowerCase() === 'income' ? '+' : '-'} ₹{Number(t.amount).toLocaleString('en-IN')}
+    </span>
+    
+    <div style={{ display: 'flex', gap: '6px', flexShrink: 0 }}>
+      <button onClick={() => startEdit(t)} style={actionEditBtn} title="Edit row entry">✏️</button>
+      <button onClick={() => handleDelete(t._id)} style={actionDeleteBtn} title="Delete row entry">🗑️</button>
+    </div>
+  </div>
+
+</div>
                 )}
             </div>
               )
