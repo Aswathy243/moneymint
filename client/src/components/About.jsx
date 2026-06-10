@@ -2,7 +2,7 @@ export default function About() {
   return (
     <div style={{ maxWidth: 750, margin: '0 auto', background: '#111827', borderRadius: 14, padding: '32px', border: '1px solid #1e293b', boxShadow: '0 4px 15px rgba(0,0,0,0.2)' }}>
       <h2 style={{ margin: '0 0 8px 0', fontSize: 22, color: '#f8fafc', fontWeight: 800 }}>
-        About MONEYMINT
+        About FYNZOVA
       </h2>
       <p style={{ color: '#94a3b8', fontSize: 14, marginTop: 0, marginBottom: 24 }}>
         Version 1.0.0 — Personal Finance Tracker
@@ -10,9 +10,9 @@ export default function About() {
 
       <hr style={{ border: 'none', borderTop: '1px solid #1e293b', margin: '24px 0' }} />
 
-      <h3 style={sectionTitleStyle}>🎯 What is MONEYMINT?</h3>
+      <h3 style={sectionTitleStyle}>🎯 What is FYNZOVA?</h3>
       <p style={bodyTextStyle}>
-        Most people don't know where their money goes each month. MONEYMINT makes it easy to log your daily income and expenses, spot spending patterns through visual charts, and download yearly and monthly reports — so you're always in control of your finances.
+        Most people don't know where their money goes each month.FYNZOVA makes it easy to log your daily income and expenses, spot spending patterns through visual charts, and download yearly and monthly reports — so you're always in control of your finances.
       </p>
 
       <h3 style={sectionTitleStyle}>⚡ Features</h3>

@@ -42,7 +42,7 @@ export default function MainLayout() {
       }}>
         {/* Logo */}
         <span style={{ fontSize: '18px', fontWeight: '800', color: '#38bdf8', letterSpacing: '-0.5px' }}>
-          💰 MONEYMINT
+          💰FYNZOVA
         </span>
 
         {/* Desktop Nav */}

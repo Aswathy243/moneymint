@@ -192,7 +192,7 @@ export default function Transactions() {
 
   const opt = {
     margin:       8,
-    filename:     `MONEYMINT-Report-${periodLabel}.pdf`,
+    filename:     `FYNZOVA-Report-${periodLabel}.pdf`,
     image:        { type: 'jpeg', quality: 0.95 },
     html2canvas:  { scale: 2, logging: false, useCORS: true },
     jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
@@ -211,7 +211,7 @@ export default function Transactions() {
       const blobUrl = URL.createObjectURL(forcedDownloadBlob);
       const link = document.createElement('a');
       link.href = blobUrl;
-      link.download = `MONEYMINT-Report-${periodLabel}.pdf`;
+      link.download = `FYNZOVA-Report-${periodLabel}.pdf`;
       
       document.body.appendChild(link);
       link.click();
